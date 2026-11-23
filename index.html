@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#d6eff0" />
+    <meta
+      name="description"
+      content="拉满快乐，发射烦恼。原创三关弹弓物理小游戏，随时来一场猪鸟大作战。"
+    />
+    <title>弹弓小鸟 · 猪猪大作战</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='34' r='25' fill='%23f17456'/%3E%3Ccircle cx='37' cy='29' r='8' fill='white'/%3E%3Ccircle cx='40' cy='29' r='3' fill='%23243837'/%3E%3Cpath d='M45 36h17l-13 9' fill='%23ffc657'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg
+      class="svg-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <symbol id="i-sound" viewBox="0 0 24 24">
+        <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+        <path d="M17 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" />
+      </symbol>
+      <symbol id="i-mute" viewBox="0 0 24 24">
+        <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+        <path d="m17 9 5 6m0-6-5 6" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24">
+        <path d="m9 5 11 7-11 7Z" />
+      </symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24">
+        <path d="M8 5v14M16 5v14" />
+      </symbol>
+      <symbol id="i-retry" viewBox="0 0 24 24">
+        <path d="M4 10a8 8 0 1 1 1 8M4 4v6h6" />
+      </symbol>
+      <symbol id="i-help" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9.3 9a2.8 2.8 0 1 1 4.5 2.2c-1.1.6-1.8 1-1.8 2.8m0 3h.01" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h16m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18" />
+      </symbol>
+      <symbol id="i-home" viewBox="0 0 24 24">
+        <path d="m3 11 9-8 9 8m-16-2v12h5v-6h4v6h5V9" />
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path d="m12 2 3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5 1.2-7-5-5 7-1Z" />
+      </symbol>
+      <symbol id="i-target" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 1v4m0 14v4M1 12h4m14 0h4" />
+      </symbol>
+    </svg>
+    <main id="app" data-screen="home">
+      <canvas
+        id="world"
+        aria-label="弹弓游戏场景：拖动左侧小鸟，向右侧小猪发射。飞行时点击使用技能。"
+        tabindex="0"
+      ></canvas>
+      <header class="home-header home-only">
+        <a class="brand" href="#" aria-label="弹弓小鸟首页"
+          ><span class="brand-mark"><i></i></span
+          ><span>小鸟游乐社<small>LITTLE BIRD CLUB</small></span></a
+        >
+        <div class="header-right">
+          <span class="edition">原创物理小游戏 <span>·</span> VOL. 01</span
+          ><button
+            class="icon-button sound-button"
+            aria-label="关闭声音"
+            title="关闭声音"
+          >
+            <svg><use href="#i-sound" /></svg>
+          </button>
+        </div>
+      </header>
+      <section id="home" class="home-only" aria-labelledby="game-title">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="live-dot"></span> 今日份快乐，准备发射！
+          </div>
+          <h1 id="game-title">
+            弹弓小鸟<span>猪猪大作战<span class="title-spark">✦</span></span>
+          </h1>
+          <p class="hero-description">
+            小鸟有点脾气，小猪有点得意。<br />拉开弹弓，给它们一点小小的震撼。
+          </p>
+          <button id="start-button" class="button primary start-button">
+            <svg><use href="#i-play" /></svg>开始游戏<svg class="button-arrow">
+              <use href="#i-arrow" />
+            </svg>
+          </button>
+          <div class="hero-actions">
+            <button id="help-button" class="text-button">
+              <svg><use href="#i-help" /></svg>怎么玩</button
+            ><span class="small-divider"></span
+            ><span>只需 3 分钟，快乐不设限</span>
+          </div>
+        </div>
+        <div class="hero-note">
+          <span>猪猪的好日子，<br />到头啦。</span
+          ><svg viewBox="0 0 90 50">
+            <path d="M3 8Q60-10 74 37m-14-9 14 12 7-15" />
+          </svg>
+        </div>
+        <div class="scene-label">
+          <span class="live-dot"></span> GREEN MEADOW · 青草试验场
+        </div>
+        <div class="home-footer">
+          <div class="feature">
+            <span class="feature-num">01—03</span
+            ><span>三座堡垒<small>小关卡，大场面</small></span>
+          </div>
+          <div class="feature">
+            <svg><use href="#i-target" /></svg
+            ><span>一拉即发<small>物理碰撞，快乐连锁</small></span>
+          </div>
+          <div class="feature">
+            <svg><use href="#i-star" /></svg
+            ><span>每颗星都算数<small>挑战你的漂亮一击</small></span>
+          </div>
+          <span class="footer-tag">MADE FOR A LITTLE BREAK.</span>
+        </div>
+      </section>
+      <section id="game-ui" hidden aria-label="游戏操作">
+        <header class="game-header">
+          <div class="level-hud">
+            <span class="level-badge" id="level-number">01</span
+            ><span
+              ><small id="level-chapter">第一站 · 青草试验场</small
+              ><strong id="level-title">猪猪茅草屋</strong></span
+            ><span class="hud-divider"></span>
+            <div class="score-hud">
+              <small>SCORE / 得分</small><strong id="score-value">0</strong>
+            </div>
+          </div>
+          <div class="game-controls">
+            <div class="targets-pill">
+              <svg><use href="#i-target" /></svg><span id="pig-count">0</span
+              ><small>只猪</small>
+            </div>
+            <button
+              id="pause-button"
+              class="icon-button"
+              aria-label="暂停游戏"
+              title="暂停 · P"
+            >
+              <svg><use href="#i-pause" /></svg></button
+            ><button
+              id="restart-button"
+              class="icon-button"
+              aria-label="重开本关"
+              title="重开 · R"
+            >
+              <svg><use href="#i-retry" /></svg></button
+            ><button
+              class="icon-button sound-button"
+              aria-label="关闭声音"
+              title="关闭声音"
+            >
+              <svg><use href="#i-sound" /></svg>
+            </button>
+          </div>
+        </header>
+        <div id="level-intro" class="level-intro" aria-live="polite"></div>
+        <div id="ability-tip" class="ability-tip" hidden>
+          <span></span><small>飞行时点击画面释放</small>
+        </div>
+        <div class="game-bottom">
+          <div class="bird-queue-panel">
+            <span class="queue-label"
+              >小鸟出击<small id="bird-remaining">4 / 4</small></span
+            >
+            <div id="bird-queue" class="bird-queue"></div>
+          </div>
+          <div class="play-hint" id="play-hint">
+            <span class="mouse-symbol"></span>向后拖动 · 松手发射<span
+              class="hint-key"
+              >P</span
+            >
+            暂停
+          </div>
+          <button id="ability-button" class="button ability-button" disabled>
+            <span id="ability-name">冲刺</span><small>点击 / 空格</small>
+          </button>
+        </div>
+      </section>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <div id="modal-layer" class="modal-layer" hidden>
+        <section
+          id="help-panel"
+          class="panel help-panel"
+          hidden
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="help-title"
+        >
+          <button class="icon-button close-dialog" aria-label="关闭玩法说明">
+            <svg><use href="#i-close" /></svg>
+          </button>
+          <div class="panel-kicker">A LITTLE GUIDE</div>
+          <h2 id="help-title">简单一拉，快乐出发。</h2>
+          <p class="panel-description">
+            打倒所有小猪，剩下的小鸟越多，奖励越高。
+          </p>
+          <div class="instruction-row">
+            <span class="step-icon">1</span>
+            <div>
+              <strong>按住小鸟，向后拖</strong>
+              <p>虚线帮你瞄准，拉得越远飞得越快。</p>
+            </div>
+          </div>
+          <div class="instruction-row">
+            <span class="step-icon">2</span>
+            <div>
+              <strong>松手发射，再点一下</strong>
+              <p>小鸟飞行时，点击画面或按空格释放技能。</p>
+            </div>
+          </div>
+          <div class="bird-guide">
+            <div>
+              <canvas data-bird="red" width="100" height="90"></canvas
+              ><strong>椒椒 · 冲刺</strong><small>加速！直捣猪窝</small>
+            </div>
+            <div>
+              <canvas data-bird="yellow" width="100" height="90"></canvas
+              ><strong>啾啾 · 三重奏</strong><small>一变三，快乐加倍</small>
+            </div>
+            <div>
+              <canvas data-bird="black" width="100" height="90"></canvas
+              ><strong>煤球 · 爆破</strong><small>点击引爆，碰撞也会炸</small>
+            </div>
+          </div>
+          <button class="button primary close-dialog">
+            知道啦，去捣蛋<svg><use href="#i-arrow" /></svg>
+          </button>
+        </section>
+        <section
+          id="pause-panel"
+          class="panel pause-panel"
+          hidden
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="pause-title"
+        >
+          <div class="panel-kicker">TAKE A LITTLE BREAK</div>
+          <div class="pause-art">II</div>
+          <h2 id="pause-title">小鸟也要歇口气</h2>
+          <p class="panel-description">堡垒还在，我们等你回来。</p>
+          <button id="resume-button" class="button primary">
+            <svg><use href="#i-play" /></svg>继续捣蛋
+          </button>
+          <div class="panel-actions">
+            <button id="pause-restart" class="text-button">
+              <svg><use href="#i-retry" /></svg>重玩本关</button
+            ><button class="text-button home-button">
+              <svg><use href="#i-home" /></svg>返回首页
+            </button>
+          </div>
+        </section>
+        <section
+          id="result-panel"
+          class="panel result-panel"
+          hidden
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="result-title"
+        >
+          <div class="panel-kicker" id="result-kicker">A BEAUTIFUL SHOT</div>
+          <div class="result-stars" id="result-stars"></div>
+          <h2 id="result-title">好耶！猪窝拆迁成功</h2>
+          <p class="panel-description" id="result-description">
+            小猪说：下次一定把房子盖结实点。
+          </p>
+          <div class="result-score">
+            <small id="result-score-label">本关得分</small
+            ><strong id="result-score">0</strong
+            ><span id="best-label">新的最佳成绩</span>
+          </div>
+          <div class="result-details">
+            <span>击破得分 <b id="destruction-score">0</b></span
+            ><span>小鸟奖励 <b id="bonus-score">0</b></span>
+          </div>
+          <div id="journey-results" class="journey-results" hidden></div>
+          <button id="next-button" class="button primary">
+            下一关<svg><use href="#i-arrow" /></svg>
+          </button>
+          <div class="panel-actions">
+            <button id="result-retry" class="text-button">
+              <svg><use href="#i-retry" /></svg>重玩本关</button
+            ><button class="text-button home-button">
+              <svg><use href="#i-home" /></svg>返回首页
+            </button>
+          </div>
+        </section>
+      </div>
+      <div id="rotate-screen">
+        <div class="rotate-art"><span></span></div>
+        <span class="panel-kicker">A BIGGER PLAYGROUND</span>
+        <h2>横过来，快乐更开阔。</h2>
+        <p>请旋转手机，给小鸟一点飞翔的空间。</p>
+        <small>三座堡垒已经准备好，等你来捣蛋。</small>
+      </div>
+      <div id="load-error" hidden>
+        <h2>小鸟还没准备好</h2>
+        <p>物理引擎加载失败，请刷新页面或重新打开本地游戏。</p>
+        <button class="button primary" onclick="location.reload()">
+          重新加载
+        </button>
+      </div>
+    </main>
+    <script src="vendor/matter.min.js"></script>
+    <script src="audio.js"></script>
+    <script src="art.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>
